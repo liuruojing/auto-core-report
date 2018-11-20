@@ -1,0 +1,9 @@
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+*/target/
+logs
+resoureces\semi_finished_file.docx
+resoureces\dest.docx
