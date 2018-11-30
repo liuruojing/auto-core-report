@@ -1,8 +1,10 @@
 ## Introduction
 The project based on maven+jdk1.8 <br/>
-采用机制-策略设计模式<br/>
-本项目根据配置文件对word文本进行填充，支持docx文件<br/>
+本项目根据自定义word模板对其进行填充，支持docx文件<br/>
 允许的填充类型包括字符串、word表格、echart图表。<br/>
+## 设计模式
+采用机制-策略设计模式<br/>
+## 模板配置
 字符串配置：<br/>
 {{people_num;sql=select count(counter) from nil_analysis_age_5min where area_id=#{area_id};}}<br/>
 word表格配置：<br/>
@@ -10,7 +12,8 @@ word表格配置：<br/>
 echart图片配置：<br/>
 {{@image;sql=select name,statistics_time,counter from nil_heatmap_area a left join nil_analysis_age_5min b on a.id = b.area_id ORDER BY name,statistics_time;col=name;row=statistics_time;value=counter;type=bar}} <br/>
 
-流程原理：读取word中的配置文件，填充传入的参数，查询数据库，最后根据待填充的数据类型将原始数据转换成不同的需要数据，再调用poi-tl对文件进行填充<br/>
+## 流程原理
+读取word中的配置文件，填充传入的参数，查询数据库，最后根据待填充的数据类型将原始数据转换成不同的需要数据，再调用poi-tl对文件进行填充<br/>
 ## 项目模块
 
 #### cn.core.gnerator
