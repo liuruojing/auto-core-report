@@ -11,6 +11,7 @@ package cn.jarvan.enums;
  * @since auto-report-word 0.1.0
  */
 public enum DataType {
+    TEXT,         //直接文本,不需要执行sql，直接替换数据就ok
     STRING,       //普通文本
     TABLE,        //echart表格
     TABLE_RADIO,  //echar占比表格
@@ -19,6 +20,5 @@ public enum DataType {
     PIE,          //echart饼图
     BAR,          //echart柱状图
     LINE_BAR;      //echar柱状和折线混合图
-
     DataType(){}
 }

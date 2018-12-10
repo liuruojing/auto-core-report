@@ -27,9 +27,14 @@ public class Client
         //添加每个指标的参数
         Map<Integer, Map<String,Object>> allParams = new HashMap<>();
         Map<String,Object> params1 = new HashMap<>();
-        params1.put("area_id",1);
+        params1.put("datetime","2008-09-12");
+        params1.put("area_id","001");
+        params1.put("area_id1","001");
+        params1.put("area_id2","002");
         Map<String,Object> params2 = new HashMap<>();
-        params2.put("area_id",1);
+        params2.put("area_id","001");
+        params2.put("area_id1","001");
+        params2.put("area_id2","002");
         allParams.put(1,params1);
         allParams.put(2,params2);
 
@@ -37,7 +42,6 @@ public class Client
             WordGenerator.generator(allParams, indexs,
                     templateFile, destFile);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

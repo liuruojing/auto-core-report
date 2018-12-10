@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 /**
  * <b><code>SeriesData</code></b>
  * <p>
- * .构建echart需要的数据实体
+ * .构建echart、table需要的数据实体
  * <p>
  * <b>Creation Time:</b> 2018/10/25 17:46.
  *

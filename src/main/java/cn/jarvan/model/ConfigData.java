@@ -19,13 +19,6 @@ import java.util.Map;
  * @since poi 0.1.0
  */
 public class ConfigData {
-    /**
-     * LOG.
-     *
-     * @since ${PROJECT_NAME} 0.1.0
-     */
-    private static final Logger LOG = LoggerFactory
-            .getLogger(WordResolver.class);
 
     /**
      * word文档中占位符的key.
@@ -126,14 +119,9 @@ public class ConfigData {
 
     @Override
     public String toString() {
-        return "ConfigData{" +
-                "key='" + key + '\'' +
-                ", sql='" + sql + '\'' +
-                ", type=" + type +
-                ", col='" + col + '\'' +
-                ", row='" + row + '\'' +
-                ", value='" + value + '\'' +
-                '}';
+        return "ConfigData{" + "key='" + key + '\'' + ", sql='" + sql + '\''
+                + ", type=" + type + ", col='" + col + '\'' + ", row='" + row
+                + '\'' + ", value='" + value + '\'' + '}';
     }
 
     public static class Builder {
@@ -181,11 +169,12 @@ public class ConfigData {
                     || target.type == null) {
                 throw new WordGeneratorException("ConfigData 构建失败，配置文件不符合规范");
             }
-            if (target.type != DataType.STRING && (target.col == null
-                    || target.row == null || target.value == null)) {
+            if ((target.type != DataType.STRING && target.type != DataType.TEXT)
+                    && (target.col == null || target.row == null
+                            || target.value == null)) {
                 throw new WordGeneratorException("ConfigData 构建失败，配置文件不符合规范");
             }
-                return this;
+            return this;
         }
 
         public ConfigData build() {
@@ -211,6 +200,11 @@ public class ConfigData {
             target.row = map.get("row");
             target.value = map.get("value");
             initKeyAndType(params);
+            //直接文本的情况
+            if (target.type == DataType.STRING && target.sql == null) {
+              target.type = DataType.TEXT;
+              target.sql="super man sql";
+            }
         }
 
         /**
@@ -221,35 +215,36 @@ public class ConfigData {
          * @author liuruojing
          * @since ${PROJECT_NAME} 0.1.0
          */
-        private void initKeyAndType(String[] params) throws WordGeneratorException {
+        private void initKeyAndType(String[] params)
+                throws WordGeneratorException {
             String param = params[0];
             String type = param.substring(0, 1);
 
             switch (type) {
-                case "@": { // echart图片
-                    target.key = param.substring(1, param.length());
-                    // 得到最后一个配置图片具体类型的数组
-                    param = params[params.length - 1];
-                    String concreteType = param.split("=")[1];
-                    initType(concreteType);
-                    break;
-                }
-                case "#": { // word_table
-                    target.key = param.substring(1, param.length());
-                    target.type = DataType.WORD_TABLE;
-                    break;
-                }
-                default: { // 文本
-                    target.type = DataType.STRING;
-                    target.key = param;
-                    break;
-                }
+            case "@": { // echart图片
+                target.key = param.substring(1, param.length());
+                // 得到最后一个配置图片具体类型的数组
+                param = params[params.length - 1];
+                String concreteType = param.split("=")[1];
+                initType(concreteType);
+                break;
             }
-
+            case "#": { // word_table
+                target.key = param.substring(1, param.length());
+                target.type = DataType.WORD_TABLE;
+                break;
+            }
+            default: { // 文本
+                target.type = DataType.STRING;
+                target.key = param;
+                break;
+            }
+            }
 
         }
 
-        private Map<String, String> initParamsmapByParams(String[] params) throws WordGeneratorException {
+        private Map<String, String> initParamsmapByParams(String[] params)
+                throws WordGeneratorException {
             Map<String, String> map = new HashMap<>();
             for (int i = 1; i < params.length; i++) {
                 parseToMap(params[i], map);
@@ -260,7 +255,7 @@ public class ConfigData {
 
         private void initType(String concreteType)
                 throws WordGeneratorException {
-            if(concreteType == null || concreteType.equals("")) {
+            if (concreteType == null || concreteType.equals("")) {
                 throw new WordGeneratorException(
                         "ConfigData构建失败，未设置echart图片类型!");
             }
@@ -271,7 +266,7 @@ public class ConfigData {
             }
             case "line": {
                 target.setType(DataType.LINE);
-                break ;
+                break;
             }
             case "pie": {
                 target.setType(DataType.PIE);
@@ -296,12 +291,13 @@ public class ConfigData {
             }
         }
 
-        private void parseToMap(String param, Map<String, String> map) throws WordGeneratorException {
+        private void parseToMap(String param, Map<String, String> map)
+                throws WordGeneratorException {
             String[] str = param.split("=");
-            if(str.length < 2){
+            if (str.length < 2) {
                 throw new WordGeneratorException("配置文件出错");
             }
-            for(int i = 1 ;i<str.length-1;i++) {
+            for (int i = 1; i < str.length - 1; i++) {
                 str[1] = str[i] + "=" + str[i + 1];
             }
             map.put(str[0], str[1]);

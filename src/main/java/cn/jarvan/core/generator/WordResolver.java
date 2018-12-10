@@ -136,7 +136,7 @@ public final class WordResolver {
         if(type == DataType.WORD_TABLE){
             str.append("#").append(configdata.getKey()).append("}}");
         }else{
-            if(type == DataType.STRING){
+            if(type == DataType.STRING || type == DataType.TEXT){
                 str.append(configdata.getKey()).append("}}");
             }
             else{
