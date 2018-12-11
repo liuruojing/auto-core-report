@@ -169,7 +169,7 @@ public class ConfigData {
                     || target.type == null) {
                 throw new WordGeneratorException("ConfigData 构建失败，配置文件不符合规范");
             }
-            if ((target.type != DataType.TEXT && target.type != DataType.NO_SQL_TEXT)
+            if ((target.type != DataType.TEXT && target.type != DataType.NO_SQL_TEXT &&target.type != DataType.NO_SQL_WORD_TABLE)
                     && (target.col == null || target.row == null
                             || target.value == null)) {
                 throw new WordGeneratorException("ConfigData 构建失败，配置文件不符合规范");

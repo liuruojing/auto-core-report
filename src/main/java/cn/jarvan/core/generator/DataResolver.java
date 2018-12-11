@@ -107,7 +107,30 @@ public class DataResolver {
 
     private static Object excuteNosqlWordTable(ConfigData configData,
             Map<String, Object> params) {
-        return null;
+        List<RenderData> header = new ArrayList<>();
+        List<Object> body = new ArrayList<>();
+        List<List<String>> tableData = (List<List<String>>) params
+                .get(configData.getKey());
+        Iterator<String> it;
+        int recordNum = 1;
+        // 遍历每一行
+        for (List<String> record : tableData) {
+            StringBuilder recordString = new StringBuilder();
+            it = record.iterator();
+            while (it.hasNext()) {
+                if (recordNum == 1) {
+                    header.add(new TextRenderData("d0d0d0", it.next()));
+                } else {
+                    recordString.append(it.next()).append(";");
+                }
+            }
+            if (recordNum != 1) {
+                recordString.deleteCharAt(recordString.length() - 1);
+                body.add(recordString);
+            }
+            recordNum++;
+        }
+        return new TableRenderData(header, body);
     }
 
     private static Object excuteWordTable(ConfigData configData,

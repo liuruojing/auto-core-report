@@ -133,7 +133,7 @@ public final class WordResolver {
         StringBuilder str = new StringBuilder();
         str.append("{{");
         DataType type = configdata.getType();
-        if(type == DataType.WORD_TABLE){
+        if(type == DataType.WORD_TABLE || type == DataType.NO_SQL_WORD_TABLE){
             str.append("#").append(configdata.getKey()).append("}}");
         }else{
             if(type == DataType.TEXT || type == DataType.NO_SQL_TEXT){
