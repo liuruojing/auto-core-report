@@ -46,7 +46,7 @@ public class DataResolver {
         try {
             Reader reader = Resources.getResourceAsReader(resource);
             sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-            autoMapper = new SqlAutoMapper(sqlSessionFactory);
+            autoMapper = new SqlAutoMapper(sqlSessionFactory.openSession());
         } catch (IOException e) {
             LOG.error("exception:", e);
 

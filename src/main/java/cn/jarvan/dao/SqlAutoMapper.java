@@ -1,6 +1,6 @@
 /*
- * 广州丰石科技公司有限公司拥有本软件版权2015并保留所有权利。
- * Copyright 2015, GuangZhou Rich Stone Data Technologies Company Limited, 
+ * 广州丰石科技有限公司拥有本软件版权2018并保留所有权利。
+ * Copyright 2018, Guangzhou Rich Stone Data Technologies Company Limited,
  * All rights reserved.
  */
 package cn.jarvan.dao;
@@ -8,37 +8,37 @@ package cn.jarvan.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSession;
 
 /**
  * <b><code>SqlAutoMapper</code></b>
  * <p>
- * class_comment
+ * Mybatis 工具
  * <p>
  * <b>Creation Time:</b> 2017年12月28日 下午5:23:46
- *
+ * 
  * @author Zhong Dayang
  * @version 1.0.0-RELEASE 2017年12月28日
- * @since ar-be-cs 1.0.0-RELEASE
+ * @since ar-be-rs 1.0.0-RELEASE
  */
-
 public class SqlAutoMapper {
 	private final MSUtils msUtils;
-	private final SqlSessionFactory sqlSessionFactory;
+	private final SqlSession sqlSession;
 
 	/**
      * 构造方法，默认缓存MappedStatement
      *
-     * @param sqlSessionFactory
+     * @param sqlSession
      */
-    public SqlAutoMapper(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
-        this.msUtils = new MSUtils(sqlSessionFactory.openSession(true).getConfiguration());
+    public SqlAutoMapper(SqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+        this.msUtils = new MSUtils(sqlSession.getConfiguration());
     }
 
 	/**
@@ -124,13 +124,11 @@ public class SqlAutoMapper {
 	/**
 	 * 查询返回List<Map<String, Object>>
 	 *
-	 * @param sql
-	 *            执行的sql
 	 * @return
 	 */
 	public List<Map<String, Object>> selectList(String sql) {
 		String msId = msUtils.select(sql);
-		return sqlSessionFactory.openSession().selectList(msId);
+		return sqlSession.selectList(msId);
 	}
 
 	/**
@@ -145,7 +143,7 @@ public class SqlAutoMapper {
 	public List<Map<String, Object>> selectList(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.selectDynamic(sql, parameterType);
-		return sqlSessionFactory.openSession().selectList(msId, value);
+		return sqlSession.selectList(msId, value);
 	}
 
 	/**
@@ -166,7 +164,7 @@ public class SqlAutoMapper {
 		} else {
 			msId = msUtils.select(sql, resultType);
 		}
-		return sqlSessionFactory.openSession().selectList(msId);
+		return sqlSession.selectList(msId);
 	}
 
 	/**
@@ -190,7 +188,7 @@ public class SqlAutoMapper {
 		} else {
 			msId = msUtils.selectDynamic(sql, parameterType, resultType);
 		}
-		return sqlSessionFactory.openSession().selectList(msId, value);
+		return sqlSession.selectList(msId, value);
 	}
 
 	/**
@@ -202,7 +200,7 @@ public class SqlAutoMapper {
 	 */
 	public int insert(String sql) {
 		String msId = msUtils.insert(sql);
-		return sqlSessionFactory.openSession().insert(msId);
+		return sqlSession.insert(msId);
 	}
 
 	/**
@@ -217,7 +215,7 @@ public class SqlAutoMapper {
 	public int insert(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.insertDynamic(sql, parameterType);
-		return sqlSessionFactory.openSession().insert(msId, value);
+		return sqlSession.insert(msId, value);
 	}
 
 	/**
@@ -229,7 +227,7 @@ public class SqlAutoMapper {
 	 */
 	public int update(String sql) {
 		String msId = msUtils.update(sql);
-		return sqlSessionFactory.openSession().update(msId);
+		return sqlSession.update(msId);
 	}
 
 	/**
@@ -244,7 +242,7 @@ public class SqlAutoMapper {
 	public int update(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.updateDynamic(sql, parameterType);
-		return sqlSessionFactory.openSession().update(msId, value);
+		return sqlSession.update(msId, value);
 	}
 
 	/**
@@ -256,7 +254,7 @@ public class SqlAutoMapper {
 	 */
 	public int delete(String sql) {
 		String msId = msUtils.delete(sql);
-		return sqlSessionFactory.openSession().delete(msId);
+		return sqlSession.delete(msId);
 	}
 
 	/**
@@ -271,7 +269,7 @@ public class SqlAutoMapper {
 	public int delete(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.deleteDynamic(sql, parameterType);
-		return sqlSessionFactory.openSession().delete(msId, value);
+		return sqlSession.delete(msId, value);
 	}
 
 	private class MSUtils {
@@ -323,7 +321,7 @@ public class SqlAutoMapper {
 					.resultMaps(new ArrayList<ResultMap>() {
 						/**
 						 * 序列化id
-						 * @since ar-be-cs 1.0.0-RELEASE
+						 * @since ar-be-rs 1.0.0-RELEASE
 						 */
 						private static final long serialVersionUID = 1L;
 
@@ -350,7 +348,7 @@ public class SqlAutoMapper {
 					.resultMaps(new ArrayList<ResultMap>() {
 						/**
 						 * 序列化id
-						 * @since ar-be-cs 1.0.0-RELEASE
+						 * @since ar-be-rs 1.0.0-RELEASE
 						 */
 						private static final long serialVersionUID = 1L;
 
