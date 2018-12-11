@@ -26,7 +26,7 @@ public class Client {
         params1.put("area_id", "001");
         params1.put("area_id1", "001");
         params1.put("area_id2", "002");
-        List<List<String>> tableData =new LinkedList<>();
+        List<List<String>> tableData = new LinkedList<>();
         List<String> record1 = new LinkedList<>();
         record1.add("col1");
         record1.add("col2");
@@ -60,7 +60,8 @@ public class Client {
         allParams.put(2, params2);
 
         try {
-            WordGenerator.generator(allParams, indexs, templateFile, destFile);
+            WordGenerator.generator(allParams, indexs, templateFile, destFile,
+                    null);
         } catch (Exception e) {
         }
     }

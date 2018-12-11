@@ -42,11 +42,12 @@ public class WordGenerator {
      * @param params 前台参数
      * @param indexs 选中的指标id
      * @param templateFilePath 模板文件位置
+     * @param semi_finished_file_dir 中间文档生成位置，如果不传，采用默认位置
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
     public static void generator(Map<Integer, Map<String, Object>> params,
-            List<Integer> indexs, String templateFilePath, String destFilePath)
+            List<Integer> indexs, String templateFilePath, String destFilePath,String semi_finished_file_dir)
             throws WordGeneratorException {
         XWPFDocument document = null;
         FileInputStream fileInputStream = null;
@@ -54,12 +55,19 @@ public class WordGenerator {
         FileOutputStream finalOut = null;
         XWPFTemplate template = null;
         Map<String, Object> renderData;
-        String semi_finished_file;
+        File file;
+        String semi_finished_file = null;
         try {
             // 设置中间文档位置
-            semi_finished_file = getPath() + File.separator
-                    + "semi_finished_file_" + System.currentTimeMillis()
-                    + ".docx";
+            if(semi_finished_file_dir == null) {
+                semi_finished_file = getPath() + File.separator
+                        + "semi_finished_file_" + System.currentTimeMillis()
+                        + ".docx";
+            } else{
+                semi_finished_file = semi_finished_file_dir + File.separator
+                        + "semi_finished_file_" + System.currentTimeMillis()
+                        + ".docx";
+            }
             // 读取模板
             fileInputStream = new FileInputStream(templateFilePath);
             document = new XWPFDocument(fileInputStream);
@@ -88,7 +96,12 @@ public class WordGenerator {
             throw new WordGeneratorException("构建word失败:", e);
         } finally {
             try {
-                template.close();
+                if (template != null) {
+                    template.close();
+                    //删除中间文档
+                    file = new File(semi_finished_file);
+                    file.delete();
+                }
             } catch (IOException e) {
                 LOG.error("WordGenerator Exception:{}", e);
                 throw new WordGeneratorException("构建word失败:", e);
