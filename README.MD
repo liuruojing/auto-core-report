@@ -5,12 +5,14 @@ The project based on maven+jdk1.8 <br/>
 ## 设计模式
 采用机制-策略设计模式<br/>
 ## 模板配置
-字符串配置：<br/>
-{{people_num;sql=select count(counter) from nil_analysis_age_5min where area_id=#{area_id};}}<br/>
-word表格配置：<br/>
-{{#table;sql=select name,statistics_time,counter from nil_heatmap_area a left join nil_analysis_age_5min b on a.id = b.area_id ORDER BY name,statistics_time;col=name;row=statistics_time;value=counter}} <br/>
-echart图片配置：<br/>
-{{@image;sql=select name,statistics_time,counter from nil_heatmap_area a left join nil_analysis_age_5min b on a.id = b.area_id ORDER BY name,statistics_time;col=name;row=statistics_time;value=counter;type=bar}} <br/>
+本项目目前支持：<br/>
+1、直接文本替换<br/>
+2、sql文本替换<br/>
+3、直接表格替换<br/>
+后续支持：<br/>
+1、sql表格替换<br/>
+2、sql echart替换<br/>
+相关配置见resource/template.docx
 
 ## 流程原理
 读取word中的配置文件，填充传入的参数，查询数据库，最后根据待填充的数据类型将原始数据转换成不同的需要数据，再调用poi-tl对文件进行填充<br/>
@@ -28,3 +30,9 @@ sqlAutoMapper:mybatis操作数据库的工具类<br/>
 #### cn.jarvan.enums
 DataType:数据类型枚举类<br/>
 
+## 项目部署
+1、下载项目<br/>
+2、修改resources/cache.properties的中间文档存放目录<br/>
+3、创建数据库，执行nil_cell_subscriber_province.sql（pgsql）<br/>
+4、修改resources/database.properties的数据库连接信息<br/>
+5、执行test包中的client.java完成客户端调用
