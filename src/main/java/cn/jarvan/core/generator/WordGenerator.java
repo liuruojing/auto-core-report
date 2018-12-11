@@ -5,12 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-
 import cn.jarvan.util.PropertiesUtil;
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.render.RenderAPI;
 import cn.jarvan.exception.WordGeneratorException;
 import cn.jarvan.model.ConfigData;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.slf4j.Logger;
@@ -51,11 +51,13 @@ public class WordGenerator {
         XWPFDocument document = null;
         FileInputStream fileInputStream = null;
         FileOutputStream outputStream = null;
+        FileOutputStream finalOut = null;
+        XWPFTemplate template = null;
         Map<String, Object> renderData;
-        String semi_finished_file = null;
+        String semi_finished_file;
         try {
             // 设置中间文档位置
-            semi_finished_file= getPath() + File.separator
+            semi_finished_file = getPath() + File.separator
                     + "semi_finished_file_" + System.currentTimeMillis()
                     + ".docx";
             // 读取模板
@@ -69,54 +71,32 @@ public class WordGenerator {
                     index_paragraphs_map);
             // 开始拼接sql,查询数据库，获取填充word的数据
             renderData = ConfigExcutor.excute(params, configDatas);
-            //删除index标签
+            // 删除index标签
             deleteIndex(index_paragraphs_map);
             // 写出到中间文档
             outputStream = new FileOutputStream(semi_finished_file);
             document.write(outputStream);
+            // 利用poi-tl渲染中间文档
+            template = XWPFTemplate.create(semi_finished_file);
+            RenderAPI.render(template, renderData);
+            // 输出到文件系统
+            finalOut = new FileOutputStream(destFilePath);
+            template.write(finalOut);
+            finalOut.flush();
         } catch (Exception e) {
             LOG.error("WordGenerator Exception:{}", e);
             throw new WordGeneratorException("构建word失败:", e);
         } finally {
             try {
-                if (document != null) {
-                    document.close();
-
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-
-                }
-                if (fileInputStream != null) {
-
-                    fileInputStream.close();
-                }
-            } catch (Exception e) {
+                template.close();
+            } catch (IOException e) {
                 LOG.error("WordGenerator Exception:{}", e);
                 throw new WordGeneratorException("构建word失败:", e);
             }
-        }
-        // 利用poi-tl渲染中间文档
-        XWPFTemplate template = XWPFTemplate.create(semi_finished_file);
-        RenderAPI.render(template, renderData);
-        // 输出到文件系统
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(destFilePath);
-            template.write(out);
-            out.flush();
-        } catch (Exception e) {
-            LOG.error("WordGenerator Exception:{}", e);
-            throw new WordGeneratorException("构建word失败:" + e.getMessage(), e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    throw new WordGeneratorException(
-                            "构建word失败:" + e.getMessage(), e);
-                }
-            }
+            IOUtils.closeQuietly(fileInputStream);
+            IOUtils.closeQuietly(outputStream);
+            IOUtils.closeQuietly(finalOut);
+            IOUtils.closeQuietly(document);
         }
 
     }
@@ -128,14 +108,16 @@ public class WordGenerator {
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
-    private static void deleteIndex(Map<Integer, List<XWPFParagraph>> index_paragraphs_map) {
+    private static void deleteIndex(
+            Map<Integer, List<XWPFParagraph>> index_paragraphs_map) {
         Set<Map.Entry<Integer, List<XWPFParagraph>>> set = index_paragraphs_map
                 .entrySet();
         Iterator<Map.Entry<Integer, List<XWPFParagraph>>> it = set.iterator();
         while (it.hasNext()) {
             List<XWPFParagraph> paragraphs = it.next().getValue();
-            for(XWPFParagraph currenparagraph : paragraphs){
-                if(WordResolver.isParagraphStart(currenparagraph)!=-1||WordResolver.isParagraphEnd(currenparagraph)){
+            for (XWPFParagraph currenparagraph : paragraphs) {
+                if (WordResolver.isParagraphStart(currenparagraph) != -1
+                        || WordResolver.isParagraphEnd(currenparagraph)) {
                     WordResolver.remove(currenparagraph);
                 }
             }
@@ -243,7 +225,8 @@ public class WordGenerator {
      * @since ${PROJECT_NAME} 0.1.0
      */
     private static String getPath() throws IOException {
-        return PropertiesUtil.read("cache.properties", "semi_finished_file_dir");
+        return PropertiesUtil.read("cache.properties",
+                "semi_finished_file_dir");
 
     }
 }
