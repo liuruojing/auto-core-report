@@ -169,7 +169,7 @@ public class ConfigData {
                     || target.type == null) {
                 throw new WordGeneratorException("ConfigData 构建失败，配置文件不符合规范");
             }
-            if ((target.type != DataType.STRING && target.type != DataType.TEXT)
+            if ((target.type != DataType.TEXT && target.type != DataType.NO_SQL_TEXT)
                     && (target.col == null || target.row == null
                             || target.value == null)) {
                 throw new WordGeneratorException("ConfigData 构建失败，配置文件不符合规范");
@@ -201,9 +201,14 @@ public class ConfigData {
             target.value = map.get("value");
             initKeyAndType(params);
             //直接文本的情况
-            if (target.type == DataType.STRING && target.sql == null) {
-              target.type = DataType.TEXT;
+            if (target.type == DataType.TEXT && target.sql == null) {
+              target.type = DataType.NO_SQL_TEXT;
               target.sql="super man sql";
+            }
+            //直接表格的情况
+            if (target.type == DataType.WORD_TABLE && target.sql == null) {
+                target.type = DataType.NO_SQL_WORD_TABLE;
+                target.sql="super man sql";
             }
         }
 
@@ -226,7 +231,7 @@ public class ConfigData {
                 // 得到最后一个配置图片具体类型的数组
                 param = params[params.length - 1];
                 String concreteType = param.split("=")[1];
-                initType(concreteType);
+                initEchartType(concreteType);
                 break;
             }
             case "#": { // word_table
@@ -235,8 +240,8 @@ public class ConfigData {
                 break;
             }
             default: { // 文本
-                target.type = DataType.STRING;
                 target.key = param;
+                target.type = DataType.TEXT;
                 break;
             }
             }
@@ -253,7 +258,7 @@ public class ConfigData {
             return map;
         }
 
-        private void initType(String concreteType)
+        private void initEchartType(String concreteType)
                 throws WordGeneratorException {
             if (concreteType == null || concreteType.equals("")) {
                 throw new WordGeneratorException(

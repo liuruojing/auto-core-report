@@ -68,11 +68,11 @@ public class DataResolver {
 
         DataType type = configData.getType();
         switch (type) {
+        case NO_SQL_TEXT: {
+            return excuteNoSqlText(configData, params);
+        }
         case TEXT: {
             return excuteText(configData, params);
-        }
-        case STRING: {
-            return excuteString(configData, params);
         }
 
         // case WORD_TABLE: {
@@ -85,13 +85,13 @@ public class DataResolver {
 
     }
 
-    private static String excuteText(ConfigData configData,
+    private static String excuteNoSqlText(ConfigData configData,
             Map<String, Object> params) {
         String renderData = (String) params.get(configData.getKey());
         return renderData;
     }
 
-    private static String excuteString(ConfigData configData,
+    private static String excuteText(ConfigData configData,
             Map<String, Object> params) {
 
         String renderData = null;
