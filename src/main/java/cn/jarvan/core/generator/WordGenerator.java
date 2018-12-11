@@ -67,8 +67,10 @@ public class WordGenerator {
             // 将每页的指标映射成配置对象们
             Map<Integer, List<ConfigData>> configDatas = resolverConfig(
                     index_paragraphs_map);
-            // 开始拼接sql,查询数据库，获取填充word的
+            // 开始拼接sql,查询数据库，获取填充word的数据
             renderData = ConfigExcutor.excute(params, configDatas);
+            //删除index标签
+            deleteIndex(index_paragraphs_map);
             // 写出到中间文档
             outputStream = new FileOutputStream(semi_finished_file);
             document.write(outputStream);
@@ -90,7 +92,8 @@ public class WordGenerator {
                     fileInputStream.close();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("WordGenerator Exception:{}", e);
+                throw new WordGeneratorException("构建word失败:", e);
             }
         }
         // 利用poi-tl渲染中间文档
@@ -116,6 +119,27 @@ public class WordGenerator {
             }
         }
 
+    }
+
+    /**
+     * 删除<index=?></index=?>标签.
+     *
+     * @param index_paragraphs_map
+     * @author liuruojing
+     * @since ${PROJECT_NAME} 0.1.0
+     */
+    private static void deleteIndex(Map<Integer, List<XWPFParagraph>> index_paragraphs_map) {
+        Set<Map.Entry<Integer, List<XWPFParagraph>>> set = index_paragraphs_map
+                .entrySet();
+        Iterator<Map.Entry<Integer, List<XWPFParagraph>>> it = set.iterator();
+        while (it.hasNext()) {
+            List<XWPFParagraph> paragraphs = it.next().getValue();
+            for(XWPFParagraph currenparagraph : paragraphs){
+                if(WordResolver.isParagraphStart(currenparagraph)!=-1||WordResolver.isParagraphEnd(currenparagraph)){
+                    WordResolver.remove(currenparagraph);
+                }
+            }
+        }
     }
 
     /**
