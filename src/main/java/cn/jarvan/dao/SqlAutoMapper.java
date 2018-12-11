@@ -1,14 +1,9 @@
-/*
- * 广州丰石科技有限公司拥有本软件版权2018并保留所有权利。
- * Copyright 2018, Guangzhou Rich Stone Data Technologies Company Limited,
- * All rights reserved.
- */
+
 package cn.jarvan.dao;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.mapping.*;
@@ -50,7 +45,7 @@ public class SqlAutoMapper {
 	 *            泛型类型
 	 * @return
 	 */
-	private <T> T getOne(List<T> list) {
+	private synchronized <T> T getOne(List<T> list) {
 		if (list.size() == 1) {
 			return list.get(0);
 		} else if (list.size() > 1) {
@@ -68,7 +63,7 @@ public class SqlAutoMapper {
 	 *            执行的sql
 	 * @return
 	 */
-	public Map<String, Object> selectOne(String sql) {
+	public synchronized Map<String, Object> selectOne(String sql) {
 		List<Map<String, Object>> list = selectList(sql);
 		return getOne(list);
 	}
@@ -82,7 +77,7 @@ public class SqlAutoMapper {
 	 *            参数
 	 * @return
 	 */
-	public Map<String, Object> selectOne(String sql, Object value) {
+	public synchronized Map<String, Object> selectOne(String sql, Object value) {
 		List<Map<String, Object>> list = selectList(sql, value);
 		return getOne(list);
 	}
@@ -98,7 +93,7 @@ public class SqlAutoMapper {
 	 *            泛型类型
 	 * @return
 	 */
-	public <T> T selectOne(String sql, Class<T> resultType) {
+	public synchronized <T> T selectOne(String sql, Class<T> resultType) {
 		List<T> list = selectList(sql, resultType);
 		return getOne(list);
 	}
@@ -116,7 +111,7 @@ public class SqlAutoMapper {
 	 *            泛型类型
 	 * @return
 	 */
-	public <T> T selectOne(String sql, Object value, Class<T> resultType) {
+	public synchronized <T> T selectOne(String sql, Object value, Class<T> resultType) {
 		List<T> list = selectList(sql, value, resultType);
 		return getOne(list);
 	}
@@ -126,7 +121,7 @@ public class SqlAutoMapper {
 	 *
 	 * @return
 	 */
-	public List<Map<String, Object>> selectList(String sql) {
+	public synchronized List<Map<String, Object>> selectList(String sql) {
 		String msId = msUtils.select(sql);
 		return sqlSession.selectList(msId);
 	}
@@ -140,7 +135,7 @@ public class SqlAutoMapper {
 	 *            参数
 	 * @return
 	 */
-	public List<Map<String, Object>> selectList(String sql, Object value) {
+	public synchronized List<Map<String, Object>> selectList(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.selectDynamic(sql, parameterType);
 		return sqlSession.selectList(msId, value);
@@ -157,7 +152,7 @@ public class SqlAutoMapper {
 	 *            泛型类型
 	 * @return
 	 */
-	public <T> List<T> selectList(String sql, Class<T> resultType) {
+	public synchronized <T> List<T> selectList(String sql, Class<T> resultType) {
 		String msId;
 		if (resultType == null) {
 			msId = msUtils.select(sql);
@@ -180,7 +175,7 @@ public class SqlAutoMapper {
 	 *            泛型类型
 	 * @return
 	 */
-	public <T> List<T> selectList(String sql, Object value, Class<T> resultType) {
+	public synchronized <T> List<T> selectList(String sql, Object value, Class<T> resultType) {
 		String msId;
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		if (resultType == null) {
@@ -198,7 +193,7 @@ public class SqlAutoMapper {
 	 *            执行的sql
 	 * @return
 	 */
-	public int insert(String sql) {
+	public synchronized int insert(String sql) {
 		String msId = msUtils.insert(sql);
 		return sqlSession.insert(msId);
 	}
@@ -212,7 +207,7 @@ public class SqlAutoMapper {
 	 *            参数
 	 * @return
 	 */
-	public int insert(String sql, Object value) {
+	public synchronized int insert(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.insertDynamic(sql, parameterType);
 		return sqlSession.insert(msId, value);
@@ -225,7 +220,7 @@ public class SqlAutoMapper {
 	 *            执行的sql
 	 * @return
 	 */
-	public int update(String sql) {
+	public synchronized int update(String sql) {
 		String msId = msUtils.update(sql);
 		return sqlSession.update(msId);
 	}
@@ -239,7 +234,7 @@ public class SqlAutoMapper {
 	 *            参数
 	 * @return
 	 */
-	public int update(String sql, Object value) {
+	public synchronized int update(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.updateDynamic(sql, parameterType);
 		return sqlSession.update(msId, value);
@@ -252,7 +247,7 @@ public class SqlAutoMapper {
 	 *            执行的sql
 	 * @return
 	 */
-	public int delete(String sql) {
+	public synchronized int delete(String sql) {
 		String msId = msUtils.delete(sql);
 		return sqlSession.delete(msId);
 	}
@@ -266,7 +261,7 @@ public class SqlAutoMapper {
 	 *            参数
 	 * @return
 	 */
-	public int delete(String sql, Object value) {
+	public synchronized int delete(String sql, Object value) {
 		Class<?> parameterType = value != null ? value.getClass() : null;
 		String msId = msUtils.deleteDynamic(sql, parameterType);
 		return sqlSession.delete(msId, value);
