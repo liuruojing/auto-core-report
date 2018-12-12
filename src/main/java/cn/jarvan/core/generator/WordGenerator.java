@@ -36,11 +36,15 @@ public class WordGenerator {
             .getLogger(WordGenerator.class);
 
     /**
-     * 1、删除不需要的指标段paragraph 2、分成指标段的paragraph集合. 3、循环每个指标段，获取sql和待填充的指标
-     * 4、填充sql，查出数据 5、删除分段指标标签<index></index> 6、根据数据调用poi-tl生成word文档
+     * 1、删除不需要的指标段paragraph
+     * 2、分成指标段的paragraph集合.
+     * 3、循环每个指标段，获取sql和待填充的指标
+     * 4、填充sql，查出数据
+     * 5、删除分段指标标签<index></index>
+     * 6、根据数据调用poi-tl生成word文档
      * 
      * @param params 前台参数
-     * @param indexs 选中的指标id
+     * @param indexs 选中的指标段id
      * @param templateFilePath 模板文件位置
      * @param semi_finished_file_dir 中间文档生成位置，如果不传，采用默认位置
      * @author liuruojing

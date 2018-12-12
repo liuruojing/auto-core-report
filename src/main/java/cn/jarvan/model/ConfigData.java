@@ -303,7 +303,7 @@ public class ConfigData {
                 throw new WordGeneratorException("配置文件出错");
             }
             for (int i = 1; i < str.length - 1; i++) {
-                str[1] = str[i] + "=" + str[i + 1];
+                str[1] = str[1] + "=" + str[i + 1];
             }
             map.put(str[0], str[1]);
         }
