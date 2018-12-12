@@ -98,9 +98,12 @@ public class DataResolver {
         String renderData = null;
         Map<String, Object> result = autoMapper.selectOne(configData.getSql(),
                 params);
-        Iterator<Map.Entry<String, Object>> it = result.entrySet().iterator();
-        if (it.hasNext()) {
-            renderData = it.next().getValue().toString();
+        if (result != null && result.size() >= 1) {
+            Iterator<Map.Entry<String, Object>> it = result.entrySet()
+                    .iterator();
+            if (it.hasNext()) {
+                renderData = it.next().getValue().toString();
+            }
         }
         return renderData;
     }
