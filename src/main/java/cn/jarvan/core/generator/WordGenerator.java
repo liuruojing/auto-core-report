@@ -109,11 +109,12 @@ public class WordGenerator {
             } catch (IOException e) {
                 LOG.error("WordGenerator Exception:{}", e);
                 throw new WordGeneratorException("构建word失败:", e);
+            }finally {
+                IOUtils.closeQuietly(fileInputStream);
+                IOUtils.closeQuietly(outputStream);
+                IOUtils.closeQuietly(finalOut);
+                IOUtils.closeQuietly(document);
             }
-            IOUtils.closeQuietly(fileInputStream);
-            IOUtils.closeQuietly(outputStream);
-            IOUtils.closeQuietly(finalOut);
-            IOUtils.closeQuietly(document);
         }
 
     }
