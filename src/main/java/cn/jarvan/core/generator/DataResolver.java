@@ -46,7 +46,7 @@ public class DataResolver {
         try {
             Reader reader = Resources.getResourceAsReader(resource);
             sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-            autoMapper = new SqlAutoMapper(sqlSessionFactory.openSession());
+            autoMapper = new SqlAutoMapper(sqlSessionFactory.openSession(true));
         } catch (IOException e) {
             LOG.error("exception:", e);
 
@@ -63,7 +63,7 @@ public class DataResolver {
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
-    public static Object excute(ConfigData configData,
+    protected static Object excute(ConfigData configData,
             Map<String, Object> params) {
 
         DataType type = configData.getType();
@@ -72,13 +72,28 @@ public class DataResolver {
             return excuteNoSqlText(configData, params);
         }
         case TEXT: {
-            return excuteText(configData, params);
+            try {
+                return excuteText(configData, params);
+            } catch (Exception e) {
+                // 数据库连接超时异常 设置新的连接重试一次
+                autoMapper = new SqlAutoMapper(
+                        sqlSessionFactory.openSession(true));
+                return excuteText(configData, params);
+            }
+
         }
         case NO_SQL_WORD_TABLE: {
             return excuteNosqlWordTable(configData, params);
         }
         case WORD_TABLE: {
-            return excuteWordTable(configData, params);
+            try {
+                return excuteWordTable(configData, params);
+            } catch (Exception e) {
+                // 数据库连接超时异常 设置新的连接重试一次
+                autoMapper = new SqlAutoMapper(
+                        sqlSessionFactory.openSession(true));
+                excuteWordTable(configData, params);
+            }
         }
         default: {
             return excuteEchart(configData, params);
