@@ -5,16 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import cn.jarvan.util.PropertiesUtil;
-import com.deepoove.poi.XWPFTemplate;
-import com.deepoove.poi.render.RenderAPI;
+
 import cn.jarvan.exception.WordGeneratorException;
 import cn.jarvan.model.ConfigData;
+import cn.jarvan.util.FileUtil;
+import cn.jarvan.util.PropertiesUtil;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.deepoove.poi.XWPFTemplate;
+import com.deepoove.poi.render.RenderAPI;
+
 
 /**
  * <b><code>WordGenerator</code></b>
@@ -26,7 +29,12 @@ import org.slf4j.LoggerFactory;
  * @author liuruojing
  * @since poi 0.1.0
  */
-public class WordGenerator {
+public final class WordGenerator {
+    private WordGenerator() {
+        throw new UnsupportedOperationException("no permission");
+
+    }
+
     /**
      * LOG.
      *
@@ -36,26 +44,24 @@ public class WordGenerator {
             .getLogger(WordGenerator.class);
 
     /**
-     * 1、删除不需要的指标段paragraph
-     * 2、分成指标段的paragraph集合.
-     * 3、循环每个指标段，获取sql和待填充的指标
-     * 4、填充sql，查出数据
-     * 5、删除分段指标标签<index></index>
-     * 6、根据数据调用poi-tl生成word文档
+     * 1、删除不需要的指标段paragraph 2、分成指标段的paragraph集合. 3、循环每个指标段，获取sql和待填充的指标
+     * 4、填充sql，查出数据 5、删除分段指标标签<index></index> 6、根据数据调用poi-tl生成word文档
      * 
      * @param params 前台参数
-     * @param indexs 选中的指标段id
-     * @param templateFilePath 模板文件位置
-     * @param semi_finished_file_dir 中间文档生成位置，如果不传，采用默认位置
+     * @param indexs 选中的指标id
+     * @param templateFile 模板文件位置
+     * @param destFile 目标文件位置
+     * @param semi_finished_file_dir 中间文档生成文件夹位置，如果不传，采用默认位置
+     * @throws WordGeneratorException e
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
     public static void generator(Map<Integer, Map<String, Object>> params,
-            List<Integer> indexs, String templateFilePath, String destFilePath,String semi_finished_file_dir)
-            throws WordGeneratorException {
+            List<Integer> indexs, String templateFile, String destFile,
+            String semi_finished_file_dir) throws WordGeneratorException {
         XWPFDocument document = null;
         FileInputStream fileInputStream = null;
-        FileOutputStream outputStream = null;
+        FileOutputStream semiOut = null;
         FileOutputStream finalOut = null;
         XWPFTemplate template = null;
         Map<String, Object> renderData;
@@ -63,17 +69,17 @@ public class WordGenerator {
         String semi_finished_file = null;
         try {
             // 设置中间文档位置
-            if(semi_finished_file_dir == null) {
+            if (semi_finished_file_dir == null) {
                 semi_finished_file = getPath() + File.separator
                         + "semi_finished_file_" + System.currentTimeMillis()
                         + ".docx";
-            } else{
+            } else {
                 semi_finished_file = semi_finished_file_dir + File.separator
                         + "semi_finished_file_" + System.currentTimeMillis()
                         + ".docx";
             }
             // 读取模板
-            fileInputStream = new FileInputStream(templateFilePath);
+            fileInputStream = new FileInputStream(templateFile);
             document = new XWPFDocument(fileInputStream);
             // 对整个文本进行过滤，获取有用的指标段落，key为指标id，value为该指标的段落们
             Map<Integer, List<XWPFParagraph>> index_paragraphs_map = paragraphFilter(
@@ -85,14 +91,22 @@ public class WordGenerator {
             renderData = ConfigExcutor.excute(params, configDatas);
             // 删除index标签
             deleteIndex(index_paragraphs_map);
+            //判断中间文档父目录是否存在
+            semi_finished_file_dir = semi_finished_file.substring(0,
+                    semi_finished_file.lastIndexOf(File.separator));
+            FileUtil.mkdirsIfNoExist(semi_finished_file_dir);
             // 写出到中间文档
-            outputStream = new FileOutputStream(semi_finished_file);
-            document.write(outputStream);
+            semiOut = new FileOutputStream(semi_finished_file);
+            document.write(semiOut);
             // 利用poi-tl渲染中间文档
             template = XWPFTemplate.create(semi_finished_file);
             RenderAPI.render(template, renderData);
+            //判断输出文档父目录是否存在
+            String destFileDir = destFile.substring(0,
+                    destFile.lastIndexOf(File.separator));
+            FileUtil.mkdirsIfNoExist(destFileDir);
             // 输出到文件系统
-            finalOut = new FileOutputStream(destFilePath);
+            finalOut = new FileOutputStream(destFile);
             template.write(finalOut);
             finalOut.flush();
         } catch (Exception e) {
@@ -102,19 +116,21 @@ public class WordGenerator {
             try {
                 if (template != null) {
                     template.close();
-                    //删除中间文档
+                    // 删除中间文档
                     file = new File(semi_finished_file);
                     file.delete();
+
                 }
             } catch (IOException e) {
                 LOG.error("WordGenerator Exception:{}", e);
                 throw new WordGeneratorException("构建word失败:", e);
-            }finally {
+            } finally {
                 IOUtils.closeQuietly(fileInputStream);
-                IOUtils.closeQuietly(outputStream);
+                IOUtils.closeQuietly(semiOut);
                 IOUtils.closeQuietly(finalOut);
                 IOUtils.closeQuietly(document);
             }
+
         }
 
     }
@@ -122,7 +138,7 @@ public class WordGenerator {
     /**
      * 删除<index=?></index=?>标签.
      *
-     * @param index_paragraphs_map
+     * @param index_paragraphs_map 指标段集合
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
@@ -147,7 +163,9 @@ public class WordGenerator {
      * 
      * @param document 模板文档
      * @param indexs 选中指标集合
+     * @return 过滤后的有效指标段集合
      * @author liuruojing
+     * @throws Exception e
      * @since ${PROJECT_NAME} 0.1.0
      */
     private static Map<Integer, List<XWPFParagraph>> paragraphFilter(
@@ -206,8 +224,9 @@ public class WordGenerator {
     /**
      * 读取出配置，封装成对象.
      *
-     * @param indexsParagraph
-     * @return map map
+     * @param indexsParagraph 指标段落
+     * @return 从段落中解析出的配置对象
+     * @throws WordGeneratorException e
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
@@ -240,11 +259,18 @@ public class WordGenerator {
     /**
      * 获取配置文件中配置的存储中间文档文件夹路径.
      *
+     * @return path
+     * @throws IOException e
      * @since ${PROJECT_NAME} 0.1.0
      */
     private static String getPath() throws IOException {
-        return PropertiesUtil.read("cache.properties",
-                "semi_finished_file_dir");
+        if (System.getProperties().getProperty("os.name").contains("Windows")) {
+            return PropertiesUtil.read("cache.properties",
+                    "semi_finished_file_dir_windows");
+        } else {
+            return PropertiesUtil.read("cache.properties",
+                    "semi_finished_file_dir_linux");
+        }
 
     }
 }
