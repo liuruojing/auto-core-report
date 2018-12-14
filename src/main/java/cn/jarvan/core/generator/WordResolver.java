@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jarvan.enums.DataType;
-import cn.jarvan.util.StringUtil;
 import cn.jarvan.exception.WordGeneratorException;
 import cn.jarvan.model.ConfigData;
+import cn.jarvan.util.StringUtil;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.slf4j.Logger;
@@ -23,6 +23,17 @@ import org.slf4j.LoggerFactory;
  * @since poi 0.1.0
  */
 public final class WordResolver {
+    /**
+     * private construct.
+     *
+     * @param
+     * @return
+     * @author liuruojing
+     * @since ${PROJECT_NAME} 0.1.0
+     */
+    private WordResolver() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * LOG.
@@ -40,7 +51,7 @@ public final class WordResolver {
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
-    public static int isParagraphStart(XWPFParagraph paragraph) {
+    protected static int isParagraphStart(XWPFParagraph paragraph) {
         String text = paragraph.getText() == null ? "" : paragraph.getText();
         // 匹配形如<index=0>,<index=1>,<index=12>...，并返回指标id
         int index = StringUtil.findIndex(text);
@@ -48,14 +59,14 @@ public final class WordResolver {
     }
 
     /**
-     * 判断是否是指标段<index=1></index>结尾.
+     * 判断段落的内容是否是结尾标志.
      *
-     * @param paragraph
-     * @return boolean
+     * @param paragraph 段落
+     * @return true or false
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
-    public static boolean isParagraphEnd(XWPFParagraph paragraph) {
+    protected static boolean isParagraphEnd(XWPFParagraph paragraph) {
         String text = paragraph.getText() == null ? "" : paragraph.getText();
         String regex = "</index=[0-9]+?>";
         return StringUtil.hasRegexString(regex, text);
@@ -64,11 +75,11 @@ public final class WordResolver {
     /**
      * 删除掉这个paragraph的所有文本run.
      *
-     * @param paragraph
+     * @param paragraph 段落
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
-    public static void remove(XWPFParagraph paragraph) {
+    protected static void remove(XWPFParagraph paragraph) {
         List<XWPFRun> textRuns = paragraph.getRuns();
         int size = textRuns.size();
         // 删除所有run
@@ -79,14 +90,15 @@ public final class WordResolver {
 
     /**
      * {{dataName;sql=sql1,sql2;imagetype=pie}
-     * 找出段落中配置的占位符，并根据标签返回sql，占位符名称，type(替换类型：图片，表格，字段). 并将占位符的sql和type
-     * 
-     * @param
-     * @return
+     * 找出段落中配置的占位符，并根据标签返回sql，占位符名称，type(替换类型：图片，表格，字段).
+     * @param paragraph 段落
+     * @return ConfigData
      * @author liuruojing
+     * @throws WordGeneratorException e
      * @since ${PROJECT_NAME} 0.1.0
      */
-    public static List<ConfigData> findConfig(XWPFParagraph paragraph) throws WordGeneratorException {
+    protected static List<ConfigData> findConfig(XWPFParagraph paragraph)
+            throws WordGeneratorException {
         List<ConfigData> configDatas = new ArrayList<>();
         ConfigData configdata;
         String text = paragraph.getText();
@@ -95,17 +107,25 @@ public final class WordResolver {
         for (String matchString : matchStrings) {
             configdata = new ConfigData.Builder().builderByString(matchString)
                     .build();
-            //替换掉sql等配置，只留取占位符
-            text = replaceMatchString(text,matchString,configdata);
-            LOG.debug("将配置文件映射成ConfigData对象:"+configdata);
+            // 替换掉sql等配置，只留取占位符
+            text = replaceMatchString(text, matchString, configdata);
+            LOG.debug("Make config to Object:" + configdata);
             configDatas.add(configdata);
         }
-        if(configDatas.size()>0) {
+        if (configDatas.size() > 0) {
             refreshDoc(paragraph, text);
         }
         return configDatas;
     }
 
+    /**
+     * 将段落内容替换为指定字符串.
+     *
+     * @param paragraph 段落
+     * @param text 替换的文本
+     * @author liuruojing
+     * @since ${PROJECT_NAME} 0.1.0
+     */
     private static void refreshDoc(XWPFParagraph paragraph, String text) {
         List<XWPFRun> textRuns = paragraph.getRuns();
         int size = textRuns.size();
@@ -129,21 +149,31 @@ public final class WordResolver {
         paragraph.removeRun(0);
     }
 
-    private static String replaceMatchString(String text, String matchString, ConfigData configdata) {
+    /**
+     * 替换指定内容.
+     *
+     * @param text text
+     * @param matchString matchString
+     * @param configdata configdata
+     * @return string
+     * @author liuruojing
+     * @since ${PROJECT_NAME} 0.1.0
+     */
+    private static String replaceMatchString(String text, String matchString,
+            ConfigData configdata) {
         StringBuilder str = new StringBuilder();
         str.append("{{");
         DataType type = configdata.getType();
-        if(type == DataType.WORD_TABLE || type == DataType.NO_SQL_WORD_TABLE){
+        if (type == DataType.WORD_TABLE || type == DataType.NO_SQL_WORD_TABLE) {
             str.append("#").append(configdata.getKey()).append("}}");
-        }else{
-            if(type == DataType.TEXT || type == DataType.NO_SQL_TEXT){
+        } else {
+            if (type == DataType.TEXT || type == DataType.NO_SQL_TEXT) {
                 str.append(configdata.getKey()).append("}}");
-            }
-            else{
+            } else {
                 str.append("@").append(configdata.getKey()).append("}}");
             }
         }
-        text = text.replace(matchString,str);
+        text = text.replace(matchString, str);
         return text;
     }
 
