@@ -39,3 +39,7 @@ DataType:数据类型枚举类<br/>
 3、创建数据库，执行nil_cell_subscriber_province.sql（pgsql）<br/>
 4、修改resources/database.properties的数据库连接信息<br/>
 5、执行test包中的client.java完成客户端调用
+
+## 项目不足
+由于一开始设计时出现纰漏，将sql直接配置在word文本中，在实际生产环境使用时发现有些sql及其复杂，冗长，<br/>
+导致word配置文件十分繁杂.一开始应该在word中只填写填充符，sql用properties文件单独配置
