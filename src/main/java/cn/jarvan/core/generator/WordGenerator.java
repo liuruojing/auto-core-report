@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.render.RenderAPI;
 
-
 /**
  * <b><code>WordGenerator</code></b>
  * <p>
@@ -58,7 +57,8 @@ public final class WordGenerator {
      */
     public static void generator(Map<Integer, Map<String, Object>> params,
             List<Integer> indexs, String templateFile, String destFile,
-            String semi_finished_file_dir) throws WordGeneratorException {
+            String semi_finished_file_dir, String mybatisConfigUrl)
+            throws WordGeneratorException {
         XWPFDocument document = null;
         FileInputStream fileInputStream = null;
         FileOutputStream semiOut = null;
@@ -88,10 +88,11 @@ public final class WordGenerator {
             Map<Integer, List<ConfigData>> configDatas = resolverConfig(
                     index_paragraphs_map);
             // 开始拼接sql,查询数据库，获取填充word的数据
-            renderData = ConfigExcutor.excute(params, configDatas);
+            renderData = ConfigExcutor.excute(params, configDatas,
+                    mybatisConfigUrl);
             // 删除index标签
             deleteIndex(index_paragraphs_map);
-            //判断中间文档父目录是否存在
+            // 判断中间文档父目录是否存在
             semi_finished_file_dir = semi_finished_file.substring(0,
                     semi_finished_file.lastIndexOf(File.separator));
             FileUtil.mkdirsIfNoExist(semi_finished_file_dir);
@@ -101,7 +102,7 @@ public final class WordGenerator {
             // 利用poi-tl渲染中间文档
             template = XWPFTemplate.create(semi_finished_file);
             RenderAPI.render(template, renderData);
-            //判断输出文档父目录是否存在
+            // 判断输出文档父目录是否存在
             String destFileDir = destFile.substring(0,
                     destFile.lastIndexOf(File.separator));
             FileUtil.mkdirsIfNoExist(destFileDir);

@@ -25,20 +25,21 @@ public class ConfigExcutor {
      * @author liuruojing
      * @since ${PROJECT_NAME} 0.1.0
      */
-    public static Map<String, Object> excute(Map<Integer, Map<String, Object>> params, Map<Integer, List<ConfigData>> configDatas) {
+    public static Map<String, Object> excute(Map<Integer, Map<String, Object>> params, Map<Integer, List<ConfigData>> configDatas,String mybatisConfigUrl) {
         Map<String, Object> renderData = new HashMap();
         Set<Map.Entry<Integer,List<ConfigData>>> entrySet = configDatas.entrySet();
         Iterator<Map.Entry<Integer,List<ConfigData>>> it = entrySet.iterator();
         Map.Entry<Integer,List<ConfigData>> entry;
         int index;
         List<ConfigData> indexConfigdata;
+        DataResolver dataResolver = DataResolver.getInstance(mybatisConfigUrl);
         while(it.hasNext()){
             entry = it.next();
             index = entry.getKey();
             indexConfigdata = entry.getValue();
             //开始循环具体指标配置 拼接传过来的参数开始构建数据
             for (ConfigData configData : indexConfigdata) {
-                 Object obj= DataResolver.excute(configData,params.get(index));
+                 Object obj= dataResolver.excute(configData,params.get(index));
                  renderData.put(configData.getKey(),obj);
             }
         }

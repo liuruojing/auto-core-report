@@ -61,7 +61,7 @@ public class Client {
 
         try {
             WordGenerator.generator(allParams, indexs, templateFile, destFile,
-                    null);
+                    null, null);
         } catch (Exception e) {
         }
     }
