@@ -1,4 +1,4 @@
-package cn.jarvan.core.generator;
+package cn.jarvan.core.generator.word;
 
 import cn.jarvan.model.ConfigData;
 

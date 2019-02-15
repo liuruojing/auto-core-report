@@ -1,6 +1,6 @@
 package cn.jarvan;
 
-import cn.jarvan.core.generator.WordGenerator;
+import cn.jarvan.core.generator.word.WordGenerator;
 
 import java.io.File;
 import java.util.*;
