@@ -2,6 +2,8 @@ package cn.jarvan;
 
 import cn.jarvan.core.generator.excel.ExcelGenerator;
 import cn.jarvan.exception.excel.ExcelGeneratorException;
+import cn.jarvan.model.Data;
+import cn.jarvan.model.word.ConfigData;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +20,12 @@ import java.util.List;
  */
 public class ExcelClient {
 
-    public static void main(String[] args) throws ExcelGeneratorException {
+    public static void main(String[] args) throws ExcelGeneratorException, IllegalAccessException {
+        //generatorBylist();
+        generator();
+    }
+
+    public static void generatorBylist() throws ExcelGeneratorException {
         List<List<String>> data = new LinkedList<>();
         List<String> header = new LinkedList();
         header.add("第一列");
@@ -28,6 +35,15 @@ public class ExcelClient {
         record.add("值2");
         data.add(header);
         data.add(record);
-        ExcelGenerator.generator("C:\\wordGenerator\\dest_files\\simple.xlsx","simple",data);
+        ExcelGenerator.generatorByList(
+                "C:\\wordGenerator\\dest_files\\simple.xlsx", "simple", data);
+    }
+
+    public static void generator() throws ExcelGeneratorException, IllegalAccessException {
+        List<Data> list = new LinkedList<>();
+        Data data = new Data("liuruojing", "man", 23);
+        list.add(data);
+        ExcelGenerator.generator("C:\\wordGenerator\\dest_files\\simple.xlsx",
+                "simple", list);
     }
 }
