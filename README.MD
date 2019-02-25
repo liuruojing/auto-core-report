@@ -1,13 +1,20 @@
 ## Introduction
 The project based on maven+jdk1.8 <br/>
-本项目根据自定义word模板对其进行填充，支持docx文件<br/>
-允许的填充类型包括字符串、word表格、echart图表。<br/>
+1、本项目根据自定义word模板对其进行填充，支持docx文件<br/>
+1.1允许的填充类型包括字符串、word表格、echart图表。<br/>
+2、可快速生成excel报表<br/>
+3、支持多线程并发调用
+
 ## 设计模式
 采用
 机制-策略设计模式<br/>
 单例模式<br/>
 构建者模式<br/>
-## 模板配置
+
+## 用到的技术
+poi、文件读写、泛型、反射、自定义注解、枚举、多线程、mybatis<br/>
+
+## word模板配置
 本项目目前支持：<br/>
 1、直接文本替换<br/>
 2、sql文本替换<br/>
@@ -17,15 +24,18 @@ The project based on maven+jdk1.8 <br/>
 2、sql echart替换<br/>
 相关配置见resource/template.docx
 
-## 流程原理
+## word流程原理
 读取word中的配置文件，填充传入的参数，查询数据库，最后根据待填充的数据类型将原始数据转换成不同的需要数据，再调用poi-tl对文件进行填充<br/>
 ## 项目模块
 
-#### cn.core.gnerator
+#### cn.core.gnerator.word
 WordGenerator：generator方法是程序对外提供的唯一调用接口，包含生成word文件的核心机制<br/>
 WordResolver：解析word文件中的配置文件解析器<br/>
 ConfigExcutor：包含执行配置文件，获取数据的核心机制<br/>
 DataResolver：真正获取数据，解析数据，数据类型转换的解析器<br/>
+
+#### cn.core.gnerator.excel
+ExcelGenerator：对外提供两个接口generator和generatorByList<br/>
 
 #### cn.jarvan.dao
 sqlAutoMapper:mybatis操作数据库的工具类<br/>
