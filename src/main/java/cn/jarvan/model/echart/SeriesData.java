@@ -1,4 +1,4 @@
-package cn.jarvan.model;
+package cn.jarvan.model.echart;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;

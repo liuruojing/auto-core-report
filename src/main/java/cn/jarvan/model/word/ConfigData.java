@@ -1,7 +1,7 @@
-package cn.jarvan.model;
+package cn.jarvan.model.word;
 
 import cn.jarvan.enums.DataType;
-import cn.jarvan.exception.WordGeneratorException;
+import cn.jarvan.exception.word.WordGeneratorException;
 
 import java.util.HashMap;
 import java.util.Map;

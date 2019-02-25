@@ -1,4 +1,4 @@
-package cn.jarvan.exception;
+package cn.jarvan.exception.word;
 
 /**
  * <b><code>WordGeneratorException</code></b>

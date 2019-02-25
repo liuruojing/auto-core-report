@@ -6,8 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-import cn.jarvan.exception.WordGeneratorException;
-import cn.jarvan.model.ConfigData;
+import cn.jarvan.exception.word.WordGeneratorException;
+import cn.jarvan.model.word.ConfigData;
 import cn.jarvan.util.FileUtil;
 import cn.jarvan.util.PropertiesUtil;
 import org.apache.poi.util.IOUtils;
@@ -110,6 +110,7 @@ public final class WordGenerator {
             finalOut = new FileOutputStream(destFile);
             template.write(finalOut);
             finalOut.flush();
+            LOG.info("生成word文件 " + destFile + " 成功");
         } catch (Exception e) {
             LOG.error("WordGenerator Exception:{}", e);
             throw new WordGeneratorException("构建word失败:", e);

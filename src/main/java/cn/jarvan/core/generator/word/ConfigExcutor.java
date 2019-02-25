@@ -1,6 +1,6 @@
 package cn.jarvan.core.generator.word;
 
-import cn.jarvan.model.ConfigData;
+import cn.jarvan.model.word.ConfigData;
 
 import java.util.*;
 

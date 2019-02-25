@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jarvan.enums.DataType;
-import cn.jarvan.exception.WordGeneratorException;
-import cn.jarvan.model.ConfigData;
+import cn.jarvan.exception.word.WordGeneratorException;
+import cn.jarvan.model.word.ConfigData;
 import cn.jarvan.util.StringUtil;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;

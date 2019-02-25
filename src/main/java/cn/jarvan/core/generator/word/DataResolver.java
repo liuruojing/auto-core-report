@@ -11,7 +11,7 @@ import java.util.Map;
 
 import cn.jarvan.dao.SqlAutoMapper;
 import cn.jarvan.enums.DataType;
-import cn.jarvan.model.ConfigData;
+import cn.jarvan.model.word.ConfigData;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
