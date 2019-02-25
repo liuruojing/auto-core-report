@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Hello world!
  */
-public class Client {
+public class WordClient {
     public static void main(String[] args) {
         String basePath = System.getProperty("user.dir") + File.separator
                 + "resources";
