@@ -1,7 +1,7 @@
 ## Introduction
 The project based on maven+jdk1.8 <br/>
 1、本项目根据自定义word模板对其进行填充，支持docx文件<br/>
-1.1允许的填充类型包括字符串、word表格、echart图表。<br/>
+   --允许的填充类型包括字符串、word表格、echart图表。<br/>
 2、可快速生成excel报表<br/>
 3、支持多线程并发调用
 
