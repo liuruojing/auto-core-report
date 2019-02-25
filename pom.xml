@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.richstonedt.nile</groupId>
-  <artifactId>auto-report-word</artifactId>
+  <artifactId>auto-core-report</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>auto-report-word</name>
+  <name>auto-core-report</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
