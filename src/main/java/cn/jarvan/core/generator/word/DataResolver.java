@@ -222,13 +222,13 @@ public class DataResolver {
 
     private static synchronized Object excuteWordTable(ConfigData configData,
             Map<String, Object> params) {
-        TableRenderData renderData;
+        //todo
         return null;
     }
 
     private static synchronized Object excuteEchart(ConfigData configData,
             Map<String, Object> params) {
-
+        //todo
         return null;
     }
 

@@ -29,6 +29,7 @@ public final class PropertiesUtil {
      */
     private static final Logger LOG = LoggerFactory
             .getLogger(PropertiesUtil.class);
+
     private PropertiesUtil() {
 
     }
@@ -61,10 +62,12 @@ public final class PropertiesUtil {
             return paramValue;
         } finally {
             try {
-                in.close();
+                if (in != null) {
+                    in.close();
+                }
             } catch (Exception e) {
-                //e.printStackTrace();
-                LOG.debug("bug：",e);
+                // e.printStackTrace();
+                LOG.debug("erro:", e);
 
             }
         }
