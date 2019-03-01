@@ -1,28 +1,28 @@
 ## Introduction
 The project based on maven+jdk1.8 <br/>
-1、本项目根据自定义word模板对其进行填充，支持docx文件<br/>
-   --允许的填充类型包括字符串、word表格、echart图表。<br/>
-2、可快速生成excel报表<br/>
-3、支持多线程并发调用
+1、本项目分为word、excel两个模块。
+2、word模块可根据自定义的模板自动生成最终的填充后文件(本模块流程较为复杂)，模板中可包含sql语句，最终会根据查出的数据进行替换，替换的内容可以是文本，表格，echart图表。
+3、excel模块可根据数据生成excel报表
 
 ## 设计模式
-采用
-机制-策略设计模式<br/>
+策略模式<br/>
 单例模式<br/>
 构建者模式<br/>
 
 ## 用到的技术
-poi、文件读写、泛型、反射、自定义注解、枚举、多线程、mybatis<br/>
+poi、文件读写、泛型、反射、自定义注解、枚举、mybatis<br/>
 
 ## word模板配置
 本项目目前支持：<br/>
 1、直接文本替换<br/>
 2、sql文本替换<br/>
 3、直接表格替换<br/>
-后续支持：<br/>
+
+预留功能
 1、sql表格替换<br/>
 2、sql echart替换<br/>
-相关配置见resource/template.docx
+这两个策略暂时没有实现，如果你想要支持这两个功能，可自行实现DataResolver的相应方法
+相关的word模板如何配置见resource/template.docx
 
 ## word流程原理
 读取word中的配置文件，填充传入的参数，查询数据库，最后根据待填充的数据类型将原始数据转换成不同的需要数据，再调用poi-tl对文件进行填充<br/>
