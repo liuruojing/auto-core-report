@@ -1,8 +1,8 @@
 ## Introduction
 The project based on maven+jdk1.8 <br/>
-1、本项目分为word、excel两个模块。
-2、word模块可根据自定义的模板自动生成最终的填充后文件(本模块流程较为复杂)，模板中可包含sql语句，最终会根据查出的数据进行替换，替换的内容可以是文本，表格，echart图表。
-3、excel模块可根据数据生成excel报表
+1、本项目分为word、excel两个模块。<br/>
+2、word模块可根据自定义的模板自动生成最终的填充后文件(本模块流程较为复杂)，模板中可包含sql语句，最终会根据查出的数据进行替换，替换的内容可以是文本，表格，echart图表。<br/>
+3、excel模块可根据数据生成excel报表<br/>
 
 ## 设计模式
 策略模式<br/>
