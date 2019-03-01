@@ -21,8 +21,8 @@ poi、文件读写、泛型、反射、自定义注解、枚举、mybatis<br/>
 预留功能
 1、sql表格替换<br/>
 2、sql echart替换<br/>
-这两个策略暂时没有实现，如果你想要支持这两个功能，可自行实现DataResolver的相应方法
-相关的word模板如何配置见resource/template.docx
+这两个策略暂时没有实现，如果你想要支持这两个功能，可自行实现DataResolver的相应方法<br/>
+相关的word模板如何配置见resource/template.docx<br/>
 
 ## word流程原理
 读取word中的配置文件，填充传入的参数，查询数据库，最后根据待填充的数据类型将原始数据转换成不同的需要数据，再调用poi-tl对文件进行填充<br/>
