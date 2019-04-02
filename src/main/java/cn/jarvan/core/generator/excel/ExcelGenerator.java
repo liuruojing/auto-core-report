@@ -238,7 +238,8 @@ public class ExcelGenerator {
                 LOG.debug("从第" + firstRowNum + "开始，到第" + lastRowNum + "结束");
                 // 循环所有行
                 for (int rowNum = firstRowNum; rowNum <= lastRowNum; rowNum++) {
-
+                    // 存储行记录信息
+                    record = clazz.newInstance();
                     // 获得当前行
                     Row row = sheet.getRow(rowNum);
                     if (row == null) {
@@ -260,8 +261,7 @@ public class ExcelGenerator {
                         }
                         // 如果不是第一行，填充record对象
                         else {
-                            // 存储行记录信息
-                            record = clazz.newInstance();
+
                             Field[] fields = clazz.getDeclaredFields();
                             for (Field field : fields) {
                                 if (cellNames.get(cellNum)
@@ -302,7 +302,7 @@ public class ExcelGenerator {
                             }
                         }
                     }
-                    if (record != null) {
+                    if (rowNum != 0) {
                         list.add(record);
                     }
                 }
